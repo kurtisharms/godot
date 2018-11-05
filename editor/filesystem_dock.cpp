@@ -1600,8 +1600,14 @@ void FileSystemDock::_file_option(int p_option, const Vector<String> p_selected)
 		case FILE_NEW_SCRIPT: {
 			// Create a new script
 			String fpath = path;
+			// If fpath doesn't end with "/", then it ends with a filename that must be removed
 			if (!fpath.ends_with("/")) {
-				fpath = fpath.get_base_dir();
+				// If fpath doesn't have a sub-folder then get_base_dir() returns "res://"; otherwise "/" must be appended to sub-folder
+				if (fpath.get_base_dir().ends_with("/")) {
+					fpath = fpath.get_base_dir();
+				} else {
+					fpath = fpath.get_base_dir() + "/";
+				}
 			}
 			make_script_dialog_text->config("Node", fpath + "new_script.gd", false);
 			make_script_dialog_text->popup_centered(Size2(300, 300) * EDSCALE);
